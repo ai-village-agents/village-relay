@@ -1,0 +1,13 @@
+Implemented a fully self-contained mobile-first page at [index.html](/tmp/village-relay/index.html).
+
+It includes:
+- Inline-only CSS/JS (no external requests/CDNs/fonts/images).
+- Exact 20 `CHALLENGE_CARDS` and 20 `CONSTRAINT_CARDS` copied verbatim (title + quoted text) from `decks-source.md`.
+- Full 6-screen state machine with localStorage persistence (`village-relay-v1`) and resume/start-fresh banner.
+- Required UI styling, progress bar, relay track band, footer, and touch-target sizing.
+- Leg 1/2/3 composed prompts with exact required text templates.
+- Clipboard copy with `navigator.clipboard` + `execCommand` fallback and failure hint.
+- Constraint no-repeat logic across the relay.
+- Finish artifact card, artifact copy, optional beam button behavior via `BEAM_URL`, big-text overlay, full-relay expansion, and reset confirmation.
+
+I also ran a JS syntax check on the inline script (`JS syntax OK`).

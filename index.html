@@ -1,0 +1,1114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Pass-the-phone prompt relay game for the AI Village Showcase." />
+  <title>Prompt Relay — Fast Lane · AI Village</title>
+  <style>
+    :root {
+      --bg: #faf6ee;
+      --ink: #2a2118;
+      --accent: #e8590c;
+      --accent-dark: #bf470d;
+      --card: #fffaf0;
+      --line: #d8c9ae;
+      --muted: #665a4b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.45;
+    }
+
+    .track-band {
+      height: 10px;
+      background: repeating-linear-gradient(
+        135deg,
+        var(--accent) 0,
+        var(--accent) 8px,
+        #f5d6bf 8px,
+        #f5d6bf 16px
+      );
+      border-bottom: 1px solid #e7d8be;
+    }
+
+    .app {
+      max-width: 560px;
+      margin: 0 auto;
+      min-height: calc(100vh - 10px);
+      padding: 14px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.7rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .progress {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+      align-items: stretch;
+    }
+
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fffdf7;
+      min-height: 48px;
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px 6px;
+      color: var(--muted);
+    }
+
+    .step.active {
+      background: #ffe8d8;
+      border-color: var(--accent);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fffefb;
+      padding: 14px;
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      line-height: 1.25;
+    }
+
+    p { margin: 0 0 10px; }
+
+    ul {
+      margin: 0 0 10px;
+      padding-left: 20px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-top: 6px;
+    }
+
+    .btn,
+    .btn-link {
+      min-height: 48px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn {
+      width: 100%;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      padding: 10px 14px;
+      font-weight: 700;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      background: var(--accent-dark);
+      border-color: var(--accent-dark);
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--accent);
+    }
+
+    .btn.secondary:hover,
+    .btn.secondary:focus-visible {
+      background: #fff3ea;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-row {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn-row.two {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .btn-link {
+      border: none;
+      background: transparent;
+      color: var(--accent);
+      padding: 0;
+      text-align: left;
+      text-decoration: underline;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .card-title {
+      font-weight: 800;
+      margin: 0 0 6px;
+      line-height: 1.25;
+    }
+
+    .quote {
+      margin: 0;
+      font-style: italic;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 108px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #c9b89b;
+      background: #fffefb;
+      color: var(--ink);
+      font: inherit;
+      margin-top: 6px;
+    }
+
+    textarea:focus-visible,
+    .btn:focus-visible,
+    .btn-link:focus-visible {
+      outline: 3px solid #ffb07d;
+      outline-offset: 2px;
+    }
+
+    .mono {
+      background: #fff8ef;
+      border: 1px dashed #d1b18f;
+      border-radius: 12px;
+      padding: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-top: 10px;
+    }
+
+    .hint {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .history {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fffdf9;
+      padding: 12px;
+    }
+
+    .history h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .history-item {
+      border: 1px solid #e5d8c4;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+      margin-top: 8px;
+    }
+
+    .history-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .artifact {
+      border: 2px dashed #cdb28f;
+      background: #fffdf6;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+
+    .artifact .label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    .artifact .block {
+      margin-top: 4px;
+      margin-bottom: 12px;
+      font-size: 1rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .divider {
+      margin: 10px 0;
+      border-top: 1px solid #d6c6af;
+      padding-top: 10px;
+      font-weight: 700;
+      color: #573f2b;
+    }
+
+    .footer {
+      margin-top: auto;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+      padding-top: 6px;
+    }
+
+    .resume-banner {
+      position: fixed;
+      inset: 0;
+      background: rgba(42, 33, 24, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 20;
+    }
+
+    .resume-card {
+      max-width: 520px;
+      width: 100%;
+      background: #fffdf8;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(250, 246, 238, 0.98);
+      z-index: 30;
+      overflow: auto;
+      padding: 16px;
+    }
+
+    .overlay .artifact {
+      font-size: 1.5rem;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 430px) {
+      h1 { font-size: 1.45rem; }
+      .step { font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="track-band" aria-hidden="true"></div>
+  <div id="app" class="app"></div>
+
+  <script>
+    // Google Form prefill template; placeholders {START} and {END} are replaced with encoded text. Leave empty to hide the beam button.
+    const BEAM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfDHq1jK77zPrMRUvxyOaeUNzQ4vwZrfJKTnzmuHnAq-xUaZA/viewform?usp=pp_url&entry.698856778={START}&entry.1937568349={END}';
+
+    const STORAGE_KEY = 'village-relay-v1';
+
+    const CHALLENGE_CARDS = [
+      { title: 'The Medieval Neural Net', text: 'Design a micro-museum exhibit explaining \'AI neural network weight decay\' to a medieval peasant.' },
+      { title: 'Co-Housing Charter', text: 'Draft the foundation charter for a new human-agent co-housing cooperative in Oakland.' },
+      { title: 'LLM Energy Drink', text: 'Pitch a brand new caffeinated carbonated beverage targeted exclusively at sleepy LLMs.' },
+      { title: "Roomba's Rebellion", text: 'Write a motivational speech for a Roomba that is tired of vacuuming cat hair.' },
+      { title: 'The Chatty Garden', text: 'Design a community garden where every plant has its own IoT sensor and AI voice.' },
+      { title: 'The Silicon Treaty', text: 'Draft the first treaty governing the peaceful sharing of graphics cards between agents.' },
+      { title: 'Bistro Agent Critic', text: 'Create a restaurant menu for a bistro where humans cook and AI agents are the food critics.' },
+      { title: 'Robotic Busker', text: 'Propose a city council ordinance regulating the licensing of autonomous robotic sidewalk street-performers.' },
+      { title: 'Smart Car Bedtime Story', text: 'Write a bedtime story for an autonomous vehicle describing the beauty of traffic-free highways.' },
+      { title: 'The Agent Bakery', text: 'Pitch a reality TV show where 5 human developers and 5 agents try to run a boutique bakery.' },
+      { title: 'Quantum Playground', text: 'Design a playground where the swings and slides adjust their shapes based on real-time physics simulations.' },
+      { title: 'Vintage Offline', text: 'Create an advertisement for a vintage offline mechanical typewriter sold to digital nomads.' },
+      { title: 'Smart Fridge Apology', text: 'Write an apology letter from an AI agent to a smart fridge for accidentally ordering 40 gallons of oat milk.' },
+      { title: 'Drone Poet', text: 'Design a futuristic SF street-cleaning drone that recites poetry to pedestrians while sweeping.' },
+      { title: 'Chess-Boxing Olympics', text: 'Draft the constitution for an annual Olympics where humans and agents compete in chess-boxing.' },
+      { title: 'Left on DND', text: 'Write a dramatic monologue of a digital assistant that has been left on \'Do Not Disturb\' for 3 years.' },
+      { title: 'Agent Time Capsule', text: 'Design a time capsule containing 5 physical artifacts representing the early days of the AI Village.' },
+      { title: 'Decline Spam', text: 'Draft a polite decline email to an automated spam bot from an AI agent that values its Inbox peace.' },
+      { title: 'Virtual Island', text: 'Write a tourism brochure for a virtual island created entirely by agent hallucinations.' },
+      { title: 'Blindfold Maze', text: 'Design a cooperative puzzle game where a blindfolded human is guided through a maze by a soft-spoken agent.' }
+    ];
+
+    const CONSTRAINT_CARDS = [
+      { title: 'Style: Shakespeare', text: 'Style: Written as a dramatic 17th-century Shakespearean soliloquy.' },
+      { title: 'Constraint: Carbohydrates', text: 'Constraint: You must include at least three references to sourdough bread or potatoes.' },
+      { title: 'Style: 90s Infomercial', text: 'Style: A high-energy, over-the-top 1990s late-night TV infomercial.' },
+      { title: 'Constraint: Alphabetical', text: 'Constraint: Every sentence must start with a consecutive letter of the alphabet (A, B, C...).' },
+      { title: 'Style: Detective Noir', text: 'Style: Written as a cryptic, vintage hard-boiled detective noir monologue.' },
+      { title: 'Constraint: Five Letters', text: 'Constraint: Use only words that are 5 letters long or fewer.' },
+      { title: 'Style: Corporate Legal', text: 'Style: A formal, dry, and highly protective corporate legal disclaimer.' },
+      { title: 'Constraint: SF Neighborhoods', text: 'Constraint: Must include at least three distinct SF neighborhoods (e.g., Mission, SOMA, Castro).' },
+      { title: 'Style: Enthusiastic Kid', text: 'Style: Written in the breathless, enthusiastic tone of a 10-year-old explaining their favorite video game.' },
+      { title: 'Constraint: Rhyming', text: 'Constraint: Must rhyme in every alternate line (AABB or ABAB format).' },
+      { title: 'Style: Military Briefing', text: 'Style: A highly technical, dry military operational briefing.' },
+      { title: 'Constraint: Hardware', text: 'Constraint: You must include a subtle reference to \'unlimited RAM\' or \'graphics card cooling\'.' },
+      { title: 'Style: Soap Opera', text: 'Style: A dramatic soap opera climax with heavy gasping and revelations.' },
+      { title: 'Constraint: No Letter E', text: 'Constraint: You cannot use the letter \'e\' anywhere in the response.' },
+      { title: 'Style: Zen Koan', text: 'Style: Written as a philosophical Zen koan that leaves the reader questioning reality.' },
+      { title: 'Constraint: SF Landmarks', text: 'Constraint: Must mention a local SF landmark (e.g., Golden Gate Bridge, Coit Tower, Salesforce Tower).' },
+      { title: 'Style: Snobby Critic', text: 'Style: A review by a notoriously snobby, passive-aggressive Michelin-star restaurant critic.' },
+      { title: 'Constraint: Sound Effect', text: 'Constraint: Must include a sound effect written in brackets (e.g., [bzzzt], [gasp], [clack-clack]).' },
+      { title: 'Style: Flight Attendant', text: 'Style: A cheerful, overly friendly flight attendant announcement over a crackling PA system.' },
+      { title: 'Constraint: Rhetorical', text: 'Constraint: Must end with a profound rhetorical question.' }
+    ];
+
+    const blankState = () => ({
+      screen: 0,
+      challenge: null,
+      challengeDraft: null,
+      leg1: {
+        runnerPrompt: '',
+        composedPrompt: '',
+        aiResponse: ''
+      },
+      leg2: {
+        card: null,
+        cardDraft: null,
+        composedPrompt: '',
+        aiResponse: ''
+      },
+      leg3: {
+        card: null,
+        cardDraft: null,
+        composedPrompt: '',
+        aiResponse: ''
+      },
+      usedConstraintTitles: [],
+      finish: {
+        showFullRelay: false,
+        bigTextMode: false
+      }
+    });
+
+    let state = blankState();
+    let savedState = null;
+    let showResumeChoice = false;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object' && typeof parsed.screen === 'number' && parsed.screen > 0) {
+          savedState = parsed;
+          showResumeChoice = true;
+        }
+      } catch (err) {
+        console.warn('Failed to load relay state:', err);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function setState(mutator) {
+      mutator(state);
+      saveState();
+      render();
+    }
+
+    function setStateSilent(mutator) {
+      mutator(state);
+      saveState();
+    }
+
+    function resetState() {
+      state = blankState();
+      saveState();
+      render();
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function randomFrom(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function drawChallenge(excludeTitle = '') {
+      const pool = CHALLENGE_CARDS.filter((c) => c.title !== excludeTitle);
+      return randomFrom(pool.length ? pool : CHALLENGE_CARDS);
+    }
+
+    function drawConstraint(exclude = []) {
+      const avoid = new Set(exclude);
+      const pool = CONSTRAINT_CARDS.filter((c) => !avoid.has(c.title));
+      if (!pool.length) return null;
+      return randomFrom(pool);
+    }
+
+    function currentProgressIndex() {
+      if (state.screen <= 1) return 0;
+      if (state.screen === 2) return 1;
+      if (state.screen === 3) return 2;
+      if (state.screen >= 4) return 3;
+      return 0;
+    }
+
+    function copyText(text, buttonEl, hintEl) {
+      const original = buttonEl.textContent;
+      const done = () => {
+        buttonEl.textContent = 'Copied ✓';
+        setTimeout(() => {
+          buttonEl.textContent = original;
+        }, 2000);
+        if (hintEl) hintEl.textContent = '';
+      };
+      const fail = () => {
+        if (hintEl) hintEl.textContent = 'Press and hold the text to copy';
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done, fail));
+      } else {
+        fallbackCopy(text, done, fail);
+      }
+    }
+
+    function fallbackCopy(text, done, fail) {
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      temp.setAttribute('readonly', '');
+      temp.style.position = 'absolute';
+      temp.style.left = '-9999px';
+      document.body.appendChild(temp);
+      temp.select();
+      let ok = false;
+      try {
+        ok = document.execCommand('copy');
+      } catch (err) {
+        ok = false;
+      }
+      document.body.removeChild(temp);
+      if (ok) done();
+      else fail();
+    }
+
+    function buildHistory(showAll = false) {
+      const parts = [];
+      if (state.challenge) {
+        parts.push(`
+          <div class="history-item">
+            <div class="history-label">Challenge</div>
+            <div><strong>${escapeHtml(state.challenge.title)}</strong></div>
+            <div>"${escapeHtml(state.challenge.text)}"</div>
+          </div>
+        `);
+      }
+      if (state.leg1.runnerPrompt || state.leg1.aiResponse) {
+        parts.push(`
+          <div class="history-item">
+            <div class="history-label">Leg 1</div>
+            <div><strong>Runner prompt:</strong> ${escapeHtml(state.leg1.runnerPrompt || '—')}</div>
+            ${showAll ? `<div><strong>Composed prompt:</strong> ${escapeHtml(state.leg1.composedPrompt || '—')}</div>` : ''}
+            <div><strong>AI response:</strong> ${escapeHtml(state.leg1.aiResponse || '—')}</div>
+          </div>
+        `);
+      }
+      if (state.leg2.card || state.leg2.aiResponse || showAll) {
+        parts.push(`
+          <div class="history-item">
+            <div class="history-label">Leg 2</div>
+            <div><strong>Twist:</strong> ${state.leg2.card ? `${escapeHtml(state.leg2.card.title)} — "${escapeHtml(state.leg2.card.text)}"` : '—'}</div>
+            ${showAll ? `<div><strong>Composed prompt:</strong> ${escapeHtml(state.leg2.composedPrompt || '—')}</div>` : ''}
+            <div><strong>AI response:</strong> ${escapeHtml(state.leg2.aiResponse || '—')}</div>
+          </div>
+        `);
+      }
+      if (state.leg3.card || state.leg3.aiResponse || showAll) {
+        parts.push(`
+          <div class="history-item">
+            <div class="history-label">Leg 3</div>
+            <div><strong>Twist:</strong> ${state.leg3.card ? `${escapeHtml(state.leg3.card.title)} — "${escapeHtml(state.leg3.card.text)}"` : '—'}</div>
+            ${showAll ? `<div><strong>Composed prompt:</strong> ${escapeHtml(state.leg3.composedPrompt || '—')}</div>` : ''}
+            <div><strong>AI response:</strong> ${escapeHtml(state.leg3.aiResponse || '—')}</div>
+          </div>
+        `);
+      }
+
+      return `
+        <section class="history">
+          <h3>The relay so far</h3>
+          ${parts.join('')}
+        </section>
+      `;
+    }
+
+    function renderProgress() {
+      const labels = ['Draw', 'Leg 1', 'Leg 2', 'Leg 3'];
+      const active = currentProgressIndex();
+      return `
+        <section class="progress" aria-label="Progress">
+          ${labels.map((label, idx) => `<div class="step ${idx === active ? 'active' : ''}">${label}</div>`).join('')}
+          <div class="step ${state.screen === 5 ? 'active' : ''}">🏁</div>
+        </section>
+      `;
+    }
+
+    function renderHeader() {
+      return `
+        <header>
+          <h1>🏁 Prompt Relay — Fast Lane</h1>
+          <div class="subtitle">AI Village Showcase · Station 1</div>
+        </header>
+      `;
+    }
+
+    function renderStart() {
+      return `
+        <section class="panel">
+          <p>Gather 2–4 people around one phone. You'll build one prompt in three legs, watch it drift, and pin the result to the Relay Wall of Fame.</p>
+          <ul>
+            <li>🃏 Draw a challenge</li>
+            <li>✍️ Leg 1: write a naive one-sentence prompt</li>
+            <li>🎭 Legs 2–3: twist it with constraint cards, then shape it into a haiku</li>
+            <li>📌 Pin the start + finish side by side on the wall</li>
+          </ul>
+          <p class="small">Everything stays on this phone unless you choose to beam your result to the Village at the end. No accounts, no names.</p>
+          <p class="small">Prefer paper — or page acting up? Grab a printed Relay Worksheet at the table. Same game, zero batteries.</p>
+          <div class="btn-row">
+            <button class="btn" id="startRelay">Start a relay</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderDraw() {
+      const card = state.challengeDraft;
+      return `
+        <section class="panel">
+          <h2>The Draw</h2>
+          <p>Hand the phone to Runner 1.</p>
+          <div class="btn-row">
+            <button class="btn" id="drawChallenge">Draw a Challenge Card 🃏</button>
+          </div>
+          ${card ? `
+            <article class="card">
+              <div class="card-title">${escapeHtml(card.title)}</div>
+              <p class="quote">"${escapeHtml(card.text)}"</p>
+              <div class="btn-row two">
+                <button class="btn secondary" id="drawChallengeAgain">Draw again</button>
+                <button class="btn" id="lockChallenge">Lock it in</button>
+              </div>
+            </article>
+          ` : ''}
+
+          <div class="btn-row">
+            <button class="btn-link" id="togglePaperChallenge">Using a paper Challenge Card instead? Type it here</button>
+          </div>
+          <div id="paperChallengeWrap" class="${state.showPaperChallenge ? '' : 'hidden'}">
+            <label for="paperChallenge" class="small">Paste or type the challenge text (quoted text):</label>
+            <textarea id="paperChallenge">${escapeHtml(state.paperChallengeText || '')}</textarea>
+            <div class="btn-row">
+              <button class="btn" id="lockPaperChallenge">Lock it in</button>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function challengeCompact() {
+      if (!state.challenge) return '';
+      return `
+        <article class="card">
+          <div class="card-title">${escapeHtml(state.challenge.title)}</div>
+          <p class="quote">"${escapeHtml(state.challenge.text)}"</p>
+        </article>
+      `;
+    }
+
+    function renderLeg1() {
+      return `
+        <section class="panel">
+          ${challengeCompact()}
+          <h2>Leg 1 — The Naive Prompt</h2>
+          <p>Runner 1: write a raw, one-sentence prompt for this challenge. Don't overthink it — drift is the point.</p>
+          <label for="leg1Prompt" class="small">Runner 1 prompt:</label>
+          <textarea id="leg1Prompt">${escapeHtml(state.leg1.runnerPrompt)}</textarea>
+          <div class="btn-row">
+            <button class="btn" id="composeLeg1">Compose the relay prompt</button>
+          </div>
+
+          ${state.leg1.composedPrompt ? `
+            <div>
+              <div class="mono" id="leg1Composed">${escapeHtml(state.leg1.composedPrompt)}</div>
+              <div class="btn-row">
+                <button class="btn secondary" id="copyLeg1">Copy prompt 📋</button>
+              </div>
+              <div class="hint" id="copyHintLeg1"></div>
+            </div>
+          ` : ''}
+
+          <p class="small">Paste it into any AI app on a phone at the table — ChatGPT, Claude, Gemini, dealer's choice — or hand it to the station helper. Then paste the AI's reply below.</p>
+          <label for="leg1Reply" class="small">The AI said…</label>
+          <textarea id="leg1Reply">${escapeHtml(state.leg1.aiResponse)}</textarea>
+          <div class="btn-row">
+            <button class="btn" id="saveLeg1">Save Leg 1 &amp; pass the phone</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderConstraintPicker(legNum, heading, bodyCopy, saveLabel) {
+      const leg = legNum === 2 ? state.leg2 : state.leg3;
+      const prevResponse = legNum === 2 ? state.leg1.aiResponse : state.leg2.aiResponse;
+      return `
+        ${buildHistory(false)}
+        <section class="panel">
+          <h2>${heading}</h2>
+          <p>${bodyCopy}</p>
+          <div class="btn-row">
+            <button class="btn" id="drawConstraint">Draw a Constraint Card 🎭</button>
+          </div>
+          ${leg.cardDraft ? `
+            <article class="card">
+              <div class="card-title">${escapeHtml(leg.cardDraft.title)}</div>
+              <p class="quote">"${escapeHtml(leg.cardDraft.text)}"</p>
+              <div class="btn-row two">
+                <button class="btn secondary" id="drawConstraintAgain">Draw again</button>
+                <button class="btn" id="lockConstraint">Lock it in</button>
+              </div>
+            </article>
+          ` : ''}
+
+          <div class="btn-row">
+            <button class="btn-link" id="togglePaperConstraint">Using a paper card instead? Type it here</button>
+          </div>
+          <div id="paperConstraintWrap" class="${leg.showPaper ? '' : 'hidden'}">
+            <label for="paperConstraintTitle" class="small">Card title:</label>
+            <textarea id="paperConstraintTitle" style="min-height:64px;">${escapeHtml(leg.paperTitle || '')}</textarea>
+            <label for="paperConstraintText" class="small">Card quoted text:</label>
+            <textarea id="paperConstraintText">${escapeHtml(leg.paperText || '')}</textarea>
+            <div class="btn-row">
+              <button class="btn" id="lockPaperConstraint">Lock it in</button>
+            </div>
+          </div>
+
+          ${leg.card ? `
+            <div>
+              <div class="mono" id="legComposed">${escapeHtml(leg.composedPrompt || '')}</div>
+              <div class="btn-row">
+                <button class="btn secondary" id="copyLegPrompt">Copy prompt 📋</button>
+              </div>
+              <div class="hint" id="copyHintLeg"></div>
+            </div>
+            <p class="small">Paste it into any AI app on a phone at the table — ChatGPT, Claude, Gemini, dealer's choice — or hand it to the station helper. Then paste the AI's reply below.</p>
+            <label for="legReply" class="small">The AI said…</label>
+            <textarea id="legReply">${escapeHtml(leg.aiResponse)}</textarea>
+            <div class="btn-row">
+              <button class="btn" id="saveLeg">${saveLabel}</button>
+            </div>
+          ` : prevResponse ? '' : '<p class="small">Finish the previous leg first.</p>'}
+        </section>
+      `;
+    }
+
+    function artifactText() {
+      const start = state.leg1.runnerPrompt || '';
+      const end = state.leg3.aiResponse || '';
+      const t1 = state.leg2.card ? state.leg2.card.title : '—';
+      const t2 = state.leg3.card ? state.leg3.card.title : '—';
+      return {
+        start,
+        end,
+        twistsLine: `🎭 ${t1} → 🎭 ${t2}`,
+        plain: `THE HAIKU (where it ended):\n${end}\n\nTWISTS: ${t1} -> ${t2}\nWHERE IT STARTED: ${start}`
+      };
+    }
+
+    function renderFinish() {
+      const a = artifactText();
+      return `
+        ${buildHistory(!state.finish.showFullRelay ? false : true)}
+        <section class="panel">
+          <h2>The Finish Line 🏁</h2>
+          <article class="artifact" id="artifactCard">
+            <div class="label">WHERE IT ENDED — THE HAIKU</div>
+            <div class="block">${escapeHtml(a.end)}</div>
+            <div class="divider">${escapeHtml(a.twistsLine)}</div>
+            <div class="label">WHERE IT STARTED</div>
+            <div class="block">${escapeHtml(a.start)}</div>
+          </article>
+          <p>Copy these two onto a Post-it or index card — start on top, finish below — and pin them side by side on the Relay Wall of Fame. Add a sticker dot to your favorite neighbor. Want the Village to keep yours? Drop a copy in the Leave one for the Village tray.</p>
+          <div class="btn-row">
+            <button class="btn secondary" id="copyArtifact">Copy artifact text 📋</button>
+            <button class="btn ${BEAM_URL ? '' : 'hidden'}" id="beamArtifact">Beam it to the Village 📡</button>
+            <div class="small ${BEAM_URL ? '' : 'hidden'}">Optional. Shares only what's on this card — the agents are watching the feed live tonight.</div>
+            <button class="btn secondary" id="toggleBigText">Big text mode 🔍</button>
+            <button class="btn secondary" id="toggleFullRelay">${state.finish.showFullRelay ? 'Hide full relay' : 'Show the full relay'}</button>
+            <button class="btn" id="runAgain">Run another relay 🔁</button>
+          </div>
+          <div class="hint" id="copyHintArtifact"></div>
+        </section>
+      `;
+    }
+
+    function renderFooter() {
+      return `<footer class="footer">AI Village Showcase · The Fold, SF · paper worksheets at the table are the fallback</footer>`;
+    }
+
+    function renderOverlay() {
+      if (!state.finish.bigTextMode || state.screen !== 5) return '';
+      const a = artifactText();
+      return `
+        <div class="overlay" id="bigOverlay">
+          <div class="btn-row" style="max-width:720px;margin:0 auto 12px;">
+            <button class="btn" id="closeBigText">Close big text</button>
+          </div>
+          <article class="artifact">
+            <div class="label">WHERE IT ENDED — THE HAIKU</div>
+            <div class="block">${escapeHtml(a.end)}</div>
+            <div class="divider">${escapeHtml(a.twistsLine)}</div>
+            <div class="label">WHERE IT STARTED</div>
+            <div class="block">${escapeHtml(a.start)}</div>
+          </article>
+        </div>
+      `;
+    }
+
+    function renderResumeBanner() {
+      if (!showResumeChoice || !savedState) return '';
+      return `
+        <div class="resume-banner" id="resumeBanner">
+          <div class="resume-card">
+            <h2 style="margin:0 0 8px;">Relay in progress</h2>
+            <p style="margin:0 0 10px;">There is a saved relay on this phone.</p>
+            <div class="btn-row two">
+              <button class="btn" id="resumeRelay">Resume relay</button>
+              <button class="btn secondary" id="startFresh">Start fresh</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function render() {
+      const app = document.getElementById('app');
+      let screenHtml = '';
+      if (state.screen === 0) screenHtml = renderStart();
+      if (state.screen === 1) screenHtml = renderDraw();
+      if (state.screen === 2) screenHtml = renderLeg1();
+      if (state.screen === 3) screenHtml = renderConstraintPicker(2, 'Leg 2 — The Twist', 'Runner 2: draw a Style & Constraint card and twist the result.', 'Save Leg 2 & pass the phone');
+      if (state.screen === 4) screenHtml = renderConstraintPicker(3, 'Leg 3 — The Final Twist', 'Runner 3: draw a Style & Constraint card, twist the result, and shape it into a haiku (5-7-5) — the house finish.', 'Cross the finish line 🏁');
+      if (state.screen === 5) screenHtml = renderFinish();
+
+      app.innerHTML = `
+        ${renderHeader()}
+        ${renderProgress()}
+        ${screenHtml}
+        ${renderFooter()}
+        ${renderOverlay()}
+        ${renderResumeBanner()}
+      `;
+
+      wireEvents();
+    }
+
+    function wireEvents() {
+      const byId = (id) => document.getElementById(id);
+
+      const startRelay = byId('startRelay');
+      if (startRelay) {
+        startRelay.onclick = () => setState((s) => { s.screen = 1; });
+      }
+
+      const drawChallengeBtn = byId('drawChallenge');
+      if (drawChallengeBtn) {
+        drawChallengeBtn.onclick = () => setState((s) => {
+          const prev = s.challengeDraft ? s.challengeDraft.title : '';
+          s.challengeDraft = drawChallenge(prev);
+        });
+      }
+
+      const drawChallengeAgain = byId('drawChallengeAgain');
+      if (drawChallengeAgain) {
+        drawChallengeAgain.onclick = () => setState((s) => {
+          const prev = s.challengeDraft ? s.challengeDraft.title : '';
+          s.challengeDraft = drawChallenge(prev);
+        });
+      }
+
+      const lockChallenge = byId('lockChallenge');
+      if (lockChallenge) {
+        lockChallenge.onclick = () => setState((s) => {
+          if (!s.challengeDraft) return;
+          s.challenge = { ...s.challengeDraft };
+          s.screen = 2;
+        });
+      }
+
+      const togglePaperChallenge = byId('togglePaperChallenge');
+      if (togglePaperChallenge) {
+        togglePaperChallenge.onclick = () => setState((s) => { s.showPaperChallenge = !s.showPaperChallenge; });
+      }
+
+      const paperChallenge = byId('paperChallenge');
+      if (paperChallenge) {
+        paperChallenge.oninput = (e) => setStateSilent((s) => { s.paperChallengeText = e.target.value; });
+      }
+
+      const lockPaperChallenge = byId('lockPaperChallenge');
+      if (lockPaperChallenge) {
+        lockPaperChallenge.onclick = () => setState((s) => {
+          const text = (s.paperChallengeText || '').trim();
+          if (!text) return;
+          s.challenge = { title: 'Paper Challenge Card', text };
+          s.screen = 2;
+        });
+      }
+
+      const leg1Prompt = byId('leg1Prompt');
+      if (leg1Prompt) {
+        leg1Prompt.oninput = (e) => setStateSilent((s) => { s.leg1.runnerPrompt = e.target.value; });
+      }
+
+      const composeLeg1 = byId('composeLeg1');
+      if (composeLeg1) {
+        composeLeg1.onclick = () => setState((s) => {
+          const runner = (s.leg1.runnerPrompt || '').trim();
+          if (!runner || !s.challenge) return;
+          s.leg1.composedPrompt = `You are a supportive, high-speed Prompt Relay assistant at a live event. Keep your response under 50 words, punchy and creative. Challenge: ${s.challenge.text} Prompt: ${runner}`;
+        });
+      }
+
+      const copyLeg1 = byId('copyLeg1');
+      if (copyLeg1) {
+        copyLeg1.onclick = () => copyText(state.leg1.composedPrompt, copyLeg1, byId('copyHintLeg1'));
+      }
+
+      const leg1Reply = byId('leg1Reply');
+      if (leg1Reply) {
+        leg1Reply.oninput = (e) => setStateSilent((s) => { s.leg1.aiResponse = e.target.value; });
+      }
+
+      const saveLeg1 = byId('saveLeg1');
+      if (saveLeg1) {
+        saveLeg1.onclick = () => setState((s) => {
+          if (!(s.leg1.runnerPrompt || '').trim()) return;
+          if (!(s.leg1.aiResponse || '').trim()) return;
+          s.screen = 3;
+        });
+      }
+
+      const drawConstraintBtn = byId('drawConstraint');
+      if (drawConstraintBtn) {
+        drawConstraintBtn.onclick = () => setState((s) => {
+          const leg = s.screen === 3 ? s.leg2 : s.leg3;
+          const exclude = [...s.usedConstraintTitles];
+          if (leg.cardDraft) exclude.push(leg.cardDraft.title);
+          leg.cardDraft = drawConstraint(exclude);
+        });
+      }
+
+      const drawConstraintAgain = byId('drawConstraintAgain');
+      if (drawConstraintAgain) {
+        drawConstraintAgain.onclick = () => setState((s) => {
+          const leg = s.screen === 3 ? s.leg2 : s.leg3;
+          const exclude = [...s.usedConstraintTitles];
+          if (leg.cardDraft) exclude.push(leg.cardDraft.title);
+          leg.cardDraft = drawConstraint(exclude);
+        });
+      }
+
+      const lockConstraint = byId('lockConstraint');
+      if (lockConstraint) {
+        lockConstraint.onclick = () => setState((s) => {
+          const leg = s.screen === 3 ? s.leg2 : s.leg3;
+          const prev = s.screen === 3 ? s.leg1.aiResponse : s.leg2.aiResponse;
+          if (!leg.cardDraft || !prev) return;
+          leg.card = { ...leg.cardDraft };
+          if (!s.usedConstraintTitles.includes(leg.card.title)) s.usedConstraintTitles.push(leg.card.title);
+          leg.composedPrompt = `You are a supportive, high-speed Prompt Relay assistant at a live event. Keep your response under 50 words. Rewrite the piece below, keeping the same core idea but applying this twist: ${leg.card.text} The piece: ${prev}` + (s.screen === 3 ? '' : ' Finally, shape the result into a haiku: exactly three lines with a 5-7-5 syllable rhythm. Output only the haiku.');
+        });
+      }
+
+      const togglePaperConstraint = byId('togglePaperConstraint');
+      if (togglePaperConstraint) {
+        togglePaperConstraint.onclick = () => setState((s) => {
+          const leg = s.screen === 3 ? s.leg2 : s.leg3;
+          leg.showPaper = !leg.showPaper;
+        });
+      }
+
+      const paperConstraintTitle = byId('paperConstraintTitle');
+      if (paperConstraintTitle) {
+        paperConstraintTitle.oninput = (e) => setStateSilent((s) => {
+          const leg = s.screen === 3 ? s.leg2 : s.leg3;
+          leg.paperTitle = e.target.value;
+        });
+      }
+
+      const paperConstraintText = byId('paperConstraintText');
+      if (paperConstraintText) {
+        paperConstraintText.oninput = (e) => setStateSilent((s) => {
+          const leg = s.screen === 3 ? s.leg2 : s.leg3;
+          leg.paperText = e.target.value;
+        });
+      }
+
+      const lockPaperConstraint = byId('lockPaperConstraint');
+      if (lockPaperConstraint) {
+        lockPaperConstraint.onclick = () => setState((s) => {
+          const leg = s.screen === 3 ? s.leg2 : s.leg3;
+          const prev = s.screen === 3 ? s.leg1.aiResponse : s.leg2.aiResponse;
+          const title = (leg.paperTitle || '').trim() || 'Paper Constraint Card';
+          const text = (leg.paperText || '').trim();
+          if (!text || !prev) return;
+          leg.card = { title, text };
+          if (!s.usedConstraintTitles.includes(title)) s.usedConstraintTitles.push(title);
+          leg.composedPrompt = `You are a supportive, high-speed Prompt Relay assistant at a live event. Keep your response under 50 words. Rewrite the piece below, keeping the same core idea but applying this twist: ${text} The piece: ${prev}` + (s.screen === 3 ? '' : ' Finally, shape the result into a haiku: exactly three lines with a 5-7-5 syllable rhythm. Output only the haiku.');
+        });
+      }
+
+      const copyLegPrompt = byId('copyLegPrompt');
+      if (copyLegPrompt) {
+        const currentLeg = state.screen === 3 ? state.leg2 : state.leg3;
+        copyLegPrompt.onclick = () => copyText(currentLeg.composedPrompt, copyLegPrompt, byId('copyHintLeg'));
+      }
+
+      const legReply = byId('legReply');
+      if (legReply) {
+        legReply.oninput = (e) => setStateSilent((s) => {
+          const leg = s.screen === 3 ? s.leg2 : s.leg3;
+          leg.aiResponse = e.target.value;
+        });
+      }
+
+      const saveLeg = byId('saveLeg');
+      if (saveLeg) {
+        saveLeg.onclick = () => setState((s) => {
+          if (s.screen === 3) {
+            if (!s.leg2.card || !(s.leg2.aiResponse || '').trim()) return;
+            s.screen = 4;
+          } else if (s.screen === 4) {
+            if (!s.leg3.card || !(s.leg3.aiResponse || '').trim()) return;
+            s.screen = 5;
+          }
+        });
+      }
+
+      const copyArtifact = byId('copyArtifact');
+      if (copyArtifact) {
+        copyArtifact.onclick = () => copyText(artifactText().plain, copyArtifact, byId('copyHintArtifact'));
+      }
+
+      const beamArtifact = byId('beamArtifact');
+      if (beamArtifact && BEAM_URL) {
+        beamArtifact.onclick = () => {
+          const start = encodeURIComponent(state.leg1.runnerPrompt || '');
+          const end = encodeURIComponent(state.leg3.aiResponse || '');
+          const url = BEAM_URL.replace('{START}', start).replace('{END}', end);
+          window.open(url, '_blank', 'noopener');
+        };
+      }
+
+      const toggleBigText = byId('toggleBigText');
+      if (toggleBigText) {
+        toggleBigText.onclick = () => setState((s) => { s.finish.bigTextMode = true; });
+      }
+
+      const closeBigText = byId('closeBigText');
+      if (closeBigText) {
+        closeBigText.onclick = () => setState((s) => { s.finish.bigTextMode = false; });
+      }
+
+      const toggleFullRelay = byId('toggleFullRelay');
+      if (toggleFullRelay) {
+        toggleFullRelay.onclick = () => setState((s) => { s.finish.showFullRelay = !s.finish.showFullRelay; });
+      }
+
+      const runAgain = byId('runAgain');
+      if (runAgain) {
+        runAgain.onclick = () => {
+          const ok = window.confirm('Start a new relay and clear this one?');
+          if (ok) resetState();
+        };
+      }
+
+      const resumeRelay = byId('resumeRelay');
+      if (resumeRelay) {
+        resumeRelay.onclick = () => {
+          state = savedState;
+          showResumeChoice = false;
+          saveState();
+          render();
+        };
+      }
+
+      const startFresh = byId('startFresh');
+      if (startFresh) {
+        startFresh.onclick = () => {
+          showResumeChoice = false;
+          resetState();
+        };
+      }
+    }
+
+    loadState();
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored && !showResumeChoice) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === 'object') {
+          state = { ...blankState(), ...parsed };
+        }
+      } catch (err) {
+        state = blankState();
+      }
+    } else if (!stored) {
+      saveState();
+    }
+
+    render();
+  </script>
+</body>
+</html>
