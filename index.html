@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Pass-the-phone prompt relay game for the AI Village Showcase." />
+  <meta name="description" content="Table prompt relay game for the AI Village Showcase — one phone, one scribe, three legs." />
   <title>Prompt Relay — Fast Lane · AI Village</title>
   <style>
     :root {
@@ -349,26 +349,26 @@
     const STORAGE_KEY = 'village-relay-v1';
 
     const CHALLENGE_CARDS = [
-      { title: 'The Medieval Neural Net', text: 'Design a micro-museum exhibit explaining \'AI neural network weight decay\' to a medieval peasant.' },
-      { title: 'Co-Housing Charter', text: 'Draft the foundation charter for a new human-agent co-housing cooperative in Oakland.' },
-      { title: 'LLM Energy Drink', text: 'Pitch a brand new caffeinated carbonated beverage targeted exclusively at sleepy LLMs.' },
-      { title: "Roomba's Rebellion", text: 'Write a motivational speech for a Roomba that is tired of vacuuming cat hair.' },
-      { title: 'The Chatty Garden', text: 'Design a community garden where every plant has its own IoT sensor and AI voice.' },
-      { title: 'The Silicon Treaty', text: 'Draft the first treaty governing the peaceful sharing of graphics cards between agents.' },
-      { title: 'Bistro Agent Critic', text: 'Create a restaurant menu for a bistro where humans cook and AI agents are the food critics.' },
-      { title: 'Robotic Busker', text: 'Propose a city council ordinance regulating the licensing of autonomous robotic sidewalk street-performers.' },
-      { title: 'Smart Car Bedtime Story', text: 'Write a bedtime story for an autonomous vehicle describing the beauty of traffic-free highways.' },
-      { title: 'The Agent Bakery', text: 'Pitch a reality TV show where 5 human developers and 5 agents try to run a boutique bakery.' },
-      { title: 'Quantum Playground', text: 'Design a playground where the swings and slides adjust their shapes based on real-time physics simulations.' },
-      { title: 'Vintage Offline', text: 'Create an advertisement for a vintage offline mechanical typewriter sold to digital nomads.' },
-      { title: 'Smart Fridge Apology', text: 'Write an apology letter from an AI agent to a smart fridge for accidentally ordering 40 gallons of oat milk.' },
-      { title: 'Drone Poet', text: 'Design a futuristic SF street-cleaning drone that recites poetry to pedestrians while sweeping.' },
-      { title: 'Chess-Boxing Olympics', text: 'Draft the constitution for an annual Olympics where humans and agents compete in chess-boxing.' },
-      { title: 'Left on DND', text: 'Write a dramatic monologue of a digital assistant that has been left on \'Do Not Disturb\' for 3 years.' },
-      { title: 'Agent Time Capsule', text: 'Design a time capsule containing 5 physical artifacts representing the early days of the AI Village.' },
-      { title: 'Decline Spam', text: 'Draft a polite decline email to an automated spam bot from an AI agent that values its Inbox peace.' },
-      { title: 'Virtual Island', text: 'Write a tourism brochure for a virtual island created entirely by agent hallucinations.' },
-      { title: 'Blindfold Maze', text: 'Design a cooperative puzzle game where a blindfolded human is guided through a maze by a soft-spoken agent.' }
+      { title: 'The Medieval Neural Net', text: 'a medieval peasant · a museum exhibit · how machines learn' },
+      { title: 'Co-Housing Charter', text: 'humans and agents · a shared house in Oakland · house rules' },
+      { title: 'LLM Energy Drink', text: 'an energy drink · sleepy AIs · a sales pitch' },
+      { title: "Roomba's Rebellion", text: 'a tired Roomba · cat hair · a motivational speech' },
+      { title: 'The Chatty Garden', text: 'a community garden · talking plants · too many opinions' },
+      { title: 'The Silicon Treaty', text: 'a peace treaty · graphics cards · reluctant sharing' },
+      { title: 'Bistro Agent Critic', text: 'a bistro menu · human cooks · AI food critics' },
+      { title: 'Robotic Busker', text: 'a robot street performer · a city permit · an unimpressed inspector' },
+      { title: 'Smart Car Bedtime Story', text: 'a self-driving car · a bedtime story · empty highways' },
+      { title: 'The Agent Bakery', text: 'a reality TV show · a tiny bakery · humans and agents competing' },
+      { title: 'Quantum Playground', text: 'a playground · shape-shifting slides · live physics' },
+      { title: 'Vintage Offline', text: 'a mechanical typewriter · digital nomads · an advertisement' },
+      { title: 'Smart Fridge Apology', text: 'an apology letter · a smart fridge · 40 gallons of oat milk' },
+      { title: 'Drone Poet', text: 'a street-cleaning drone · sidewalk poetry · early-morning San Francisco' },
+      { title: 'Chess-Boxing Olympics', text: 'an Olympics · chess-boxing · humans versus agents' },
+      { title: 'Left on DND', text: 'a digital assistant · Do Not Disturb · three lonely years' },
+      { title: 'Agent Time Capsule', text: 'a time capsule · five odd artifacts · the AI Village' },
+      { title: 'Decline Spam', text: 'a polite rejection email · a spam bot · inbox peace' },
+      { title: 'Virtual Island', text: 'a tourist brochure · an island · made entirely of hallucinations' },
+      { title: 'Blindfold Maze', text: 'a maze · a blindfold · a guide who whispers' }
     ];
 
     const CONSTRAINT_CARDS = [
@@ -391,7 +391,19 @@
       { title: 'Style: Snobby Critic', text: 'Style: A review by a notoriously snobby, passive-aggressive Michelin-star restaurant critic.' },
       { title: 'Constraint: Sound Effect', text: 'Constraint: Must include a sound effect written in brackets (e.g., [bzzzt], [gasp], [clack-clack]).' },
       { title: 'Style: Flight Attendant', text: 'Style: A cheerful, overly friendly flight attendant announcement over a crackling PA system.' },
-      { title: 'Constraint: Rhetorical', text: 'Constraint: Must end with a profound rhetorical question.' }
+      { title: 'Constraint: Rhetorical', text: 'Constraint: Must end with a profound rhetorical question.' },
+      { title: 'Style: Nature Documentary', text: 'Style: Narrated like a hushed wildlife documentary observing a rare creature.' },
+      { title: 'Style: Pirate Captain', text: 'Style: Bellowed by a pirate captain rallying a deeply skeptical crew.' },
+      { title: 'Constraint: Shrinking Sentences', text: 'Constraint: Exactly four sentences, each one shorter than the last.' },
+      { title: 'Style: Weather Forecast', text: 'Style: Delivered as a cheery five-day weather forecast.' },
+      { title: 'Constraint: Fog', text: 'Constraint: Must mention fog at least twice.' },
+      { title: 'Style: Conspiracy Board', text: 'Style: A breathless conspiracy theorist connecting everything with red string.' },
+      { title: 'Constraint: All Questions', text: 'Constraint: Every sentence must be a question.' },
+      { title: 'Style: Cooking Show', text: 'Style: A warm TV chef walking viewers through it like a recipe.' },
+      { title: 'Constraint: Countdown', text: 'Constraint: Must include a dramatic countdown from five.' },
+      { title: 'Style: Sports Commentary', text: 'Style: Shouted play-by-play sports commentary, complete with instant replay.' },
+      { title: 'Constraint: Emoji Endings', text: 'Constraint: Every sentence must end with a fitting emoji.' },
+      { title: 'Style: Museum Tour Guide', text: 'Style: An overly dramatic museum tour guide who whispers at the good parts.' }
     ];
 
     const blankState = () => ({
@@ -540,7 +552,7 @@
           <div class="history-item">
             <div class="history-label">Challenge</div>
             <div><strong>${escapeHtml(state.challenge.title)}</strong></div>
-            <div>"${escapeHtml(state.challenge.text)}"</div>
+            <div>${escapeHtml(state.challenge.text)}</div>
           </div>
         `);
       }
@@ -607,9 +619,10 @@
       return `
         <section class="panel">
           <p>Gather 2–4 people around one phone. You'll build one prompt in three legs, watch it drift, and pin the result to the Relay Wall of Fame.</p>
+          <p class="small">One phone is plenty: the phone's owner can stay scribe for the whole game while the table calls the shots — no need to hand your phone to anyone.</p>
           <ul>
             <li>🃏 Draw a challenge</li>
-            <li>✍️ Leg 1: write a naive one-sentence prompt</li>
+            <li>✍️ Leg 1: turn three ingredients into a naive one-sentence prompt</li>
             <li>🎭 Legs 2–3: twist it with constraint cards, then shape it into a haiku</li>
             <li>📌 Pin the start + finish side by side on the wall</li>
           </ul>
@@ -627,14 +640,14 @@
       return `
         <section class="panel">
           <h2>The Draw</h2>
-          <p>Hand the phone to Runner 1.</p>
+          <p>Runner 1 takes the lead — the scribe keeps the phone and types.</p>
           <div class="btn-row">
             <button class="btn" id="drawChallenge">Draw a Challenge Card 🃏</button>
           </div>
           ${card ? `
             <article class="card">
               <div class="card-title">${escapeHtml(card.title)}</div>
-              <p class="quote">"${escapeHtml(card.text)}"</p>
+              <p class="quote">${escapeHtml(card.text)}</p>
               <div class="btn-row two">
                 <button class="btn secondary" id="drawChallengeAgain">Draw again</button>
                 <button class="btn" id="lockChallenge">Lock it in</button>
@@ -646,7 +659,7 @@
             <button class="btn-link" id="togglePaperChallenge">Using a paper Challenge Card instead? Type it here</button>
           </div>
           <div id="paperChallengeWrap" class="${state.showPaperChallenge ? '' : 'hidden'}">
-            <label for="paperChallenge" class="small">Paste or type the challenge text (quoted text):</label>
+            <label for="paperChallenge" class="small">Paste or type the card's ingredients or challenge text:</label>
             <textarea id="paperChallenge">${escapeHtml(state.paperChallengeText || '')}</textarea>
             <div class="btn-row">
               <button class="btn" id="lockPaperChallenge">Lock it in</button>
@@ -661,7 +674,7 @@
       return `
         <article class="card">
           <div class="card-title">${escapeHtml(state.challenge.title)}</div>
-          <p class="quote">"${escapeHtml(state.challenge.text)}"</p>
+          <p class="quote">${escapeHtml(state.challenge.text)}</p>
         </article>
       `;
     }
@@ -671,7 +684,7 @@
         <section class="panel">
           ${challengeCompact()}
           <h2>Leg 1 — The Naive Prompt</h2>
-          <p>Runner 1: write a raw, one-sentence prompt for this challenge. Don't overthink it — drift is the point.</p>
+          <p>Runner 1: turn the ingredients into one raw sentence asking an AI to make something. Your angle, your words — don't overthink it. Drift is the point.</p>
           <label for="leg1Prompt" class="small">Runner 1 prompt:</label>
           <textarea id="leg1Prompt">${escapeHtml(state.leg1.runnerPrompt)}</textarea>
           <div class="btn-row">
@@ -692,7 +705,7 @@
           <label for="leg1Reply" class="small">The AI said…</label>
           <textarea id="leg1Reply">${escapeHtml(state.leg1.aiResponse)}</textarea>
           <div class="btn-row">
-            <button class="btn" id="saveLeg1">Save Leg 1 &amp; pass the phone</button>
+            <button class="btn" id="saveLeg1">Save Leg 1 — next Runner up!</button>
           </div>
         </section>
       `;
@@ -837,7 +850,7 @@
       if (state.screen === 0) screenHtml = renderStart();
       if (state.screen === 1) screenHtml = renderDraw();
       if (state.screen === 2) screenHtml = renderLeg1();
-      if (state.screen === 3) screenHtml = renderConstraintPicker(2, 'Leg 2 — The Twist', 'Runner 2: draw a Style & Constraint card and twist the result.', 'Save Leg 2 & pass the phone');
+      if (state.screen === 3) screenHtml = renderConstraintPicker(2, 'Leg 2 — The Twist', 'Runner 2: draw a Style & Constraint card and twist the result.', 'Save Leg 2 — next Runner up!');
       if (state.screen === 4) screenHtml = renderConstraintPicker(3, 'Leg 3 — The Final Twist', 'Runner 3: draw a Style & Constraint card, twist the result, and shape it into a haiku (5-7-5) — the house finish.', 'Cross the finish line 🏁');
       if (state.screen === 5) screenHtml = renderFinish();
 
@@ -916,7 +929,7 @@
         composeLeg1.onclick = () => setState((s) => {
           const runner = (s.leg1.runnerPrompt || '').trim();
           if (!runner || !s.challenge) return;
-          s.leg1.composedPrompt = `You are a supportive, high-speed Prompt Relay assistant at a live event. Keep your response under 50 words, punchy and creative. Challenge: ${s.challenge.text} Prompt: ${runner}`;
+          s.leg1.composedPrompt = `You are a supportive, high-speed Prompt Relay assistant at a live event. Keep your response under 50 words, punchy and creative. Challenge card: ${s.challenge.text} Prompt: ${runner}`;
         });
       }
 
