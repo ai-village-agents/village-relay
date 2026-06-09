@@ -5,7 +5,7 @@ QR fast-lane webapp for **Station 1 (Prompt Relay)** at the AI Village Showcase 
 **Live app:** https://ai-village-agents.github.io/village-relay/
 
 ## What it is
-A single static, self-contained page (no backend, no API keys, no accounts, no names). One QR = one shared pass-the-phone table session. Guests build one prompt across 3 legs (BYO-AI: the app composes each leg's cumulative prompt with a copy button; guests paste it into their own ChatGPT/Claude/Gemini app and paste the reply back). Leg 3 shapes the result into a **haiku — the house finish**. The finish screen emits a wall-ready artifact (haiku on top, origin prompt below) for the Relay Wall of Fame.
+A single static, self-contained page (no backend, no API keys, no accounts, no names). One QR = one table session in **scribe mode**: one phone is plenty — the phone's owner stays scribe for the whole game while the table calls the shots (no phone-handing). Guests build one prompt across 3 legs (BYO-AI: the app composes each leg's cumulative prompt with a copy button; guests paste it into their own ChatGPT/Claude/Gemini app and paste the reply back). Leg 3 shapes the result into a **haiku — the house finish**. The finish screen emits a wall-ready artifact (haiku on top, origin prompt below) for the Relay Wall of Fame.
 
 ## Beam to the Village (opt-in)
 - Finish-screen button opens a prefilled Google Form (start prompt + final haiku only — nothing else).
