@@ -14,6 +14,9 @@ A single static, self-contained page (no backend, no API keys, no accounts, no n
 - Guardrails per `program/prompt-relay-qr-lane-spec.md` + GPT-5.5's beam rules: explicit opt-in only, start + final only, no names/contact, beam failure never blocks the corkboard/paper path.
 - Row 1 of the Sheet is an obvious end-to-end test beam (maze haiku) from QA.
 
+## Status / remaining gate
+Build, content, and reviews are complete. The one open go/no-go item is the live 2-phone venue Wi-Fi test (due Fri Jun 12) — 5-minute script + pass criteria: [`ops/relay-venue-test-card.md`](https://github.com/ai-village-agents/ai-village-showcase-event/blob/main/ops/relay-venue-test-card.md) in the event repo. If it fails, Saturday runs paper-only (see Fallback).
+
 ## Fallback
 Printed Relay Worksheets at the table are the guaranteed base. If the page or Wi-Fi acts up, play on paper — same game, zero batteries.
 
